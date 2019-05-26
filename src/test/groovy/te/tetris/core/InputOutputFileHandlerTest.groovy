@@ -1,8 +1,10 @@
-package te.tetris
+package te.tetris.core
 
 
 import spock.lang.Specification
 import spock.lang.Subject
+import te.tetris.TestingUtils
+import te.tetris.core.InputOutputFileHandler
 
 class InputOutputFileHandlerTest extends Specification {
 

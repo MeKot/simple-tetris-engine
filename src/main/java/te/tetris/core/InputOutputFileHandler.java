@@ -1,4 +1,4 @@
-package te.tetris;
+package te.tetris.core;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,6 +8,14 @@ import java.nio.file.Files;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+/**
+ * Reads from an input file, passes that line to some function for processing, and then writes the
+ * result of that function to the output file.
+ *
+ * The input file could, in theory, be very large so it is streamed in line-by-line rather than read
+ * in all at once.  All file handles are closed when the input file is completely processed or when
+ * an exception is thrown from within the input processing function.
+ */
 public class InputOutputFileHandler {
 
     private final File inputFile;
@@ -27,6 +35,11 @@ public class InputOutputFileHandler {
         }
     }
 
+    /**
+     * Wrapper necessary to handle any potential exceptions that could occur while writing to the
+     * output file.  Had I been able to use external libraries I would have opted for vavr's
+     * functional Try class here.
+     */
     private void writeToOutputFile(BufferedWriter outputFileWriter, String output) {
         try {
             outputFileWriter.write(output + System.lineSeparator());

@@ -1,8 +1,6 @@
 package te.tetris
 
 import spock.lang.Specification
-import spock.lang.Subject
-import te.tetris.Application
 
 class EndToEndTest extends Specification {
 
@@ -16,7 +14,7 @@ class EndToEndTest extends Specification {
             outputFile.text = ''
 
         when: 'we process the input file'
-            Application.main(args)
+            TetrisApplication.main(args)
 
         then: 'the output file contains the values'
             List<String> outputFileContents = outputFile.readLines()
