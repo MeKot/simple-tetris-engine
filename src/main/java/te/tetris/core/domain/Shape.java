@@ -6,8 +6,8 @@ import java.util.StringJoiner;
  * Represents the kinds of tetris shapes that can be parsed from the command line and the dimensions
  * of how much space they take up on our tetris grid.
  *
- * For example: a {@link #Q} has the dimensions [[0,1],[0,1]] because they take up 4 places on
- * the grid in a square formation:
+ * For example: a {@link #Q} has the dimensions [[0,1],[0,1]] because they take up 4 places on the
+ * grid in a square formation:
  * <pre>
  *     □ □
  *     □ □
@@ -15,6 +15,8 @@ import java.util.StringJoiner;
  */
 public enum Shape {
     /**
+     * Represents the following tetris shape:
+     *
      * <pre>
      *      □ □
      *      □ □
@@ -23,6 +25,8 @@ public enum Shape {
     Q("Q", new int[][]{new int[]{0, 1}, new int[]{0, 1}}),
 
     /**
+     * Represents the following tetris shape:
+     *
      * <pre>
      *      □ □ □ □
      * </pre>
@@ -30,6 +34,8 @@ public enum Shape {
     I("I", new int[][]{new int[]{0, 1, 2, 3},}),
 
     /**
+     * Represents the following tetris shape:
+     *
      * <pre>
      *      □ □
      *        □ □
@@ -38,6 +44,8 @@ public enum Shape {
     Z("Z", new int[][]{new int[]{0, 1}, new int[]{1, 2}}),
 
     /**
+     * Represents the following tetris shape:
+     *
      * <pre>
      *        □ □
      *      □ □
@@ -46,6 +54,8 @@ public enum Shape {
     S("S", new int[][]{new int[]{1, 2}, new int[]{0, 1}}),
 
     /**
+     * Represents the following tetris shape:
+     *
      * <pre>
      *      □ □ □
      *        □
@@ -54,6 +64,8 @@ public enum Shape {
     T("T", new int[][]{new int[]{0, 1, 2}, new int[]{1}}),
 
     /**
+     * Represents the following tetris shape:
+     *
      * <pre>
      *       □
      *       □
@@ -63,6 +75,8 @@ public enum Shape {
     L("L", new int[][]{new int[]{0}, new int[]{0}, new int[]{0, 1}}),
 
     /**
+     * Represents the following tetris shape:
+     *
      * <pre>
      *         □
      *         □
