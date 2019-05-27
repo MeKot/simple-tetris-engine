@@ -10,6 +10,9 @@ import te.tetris.core.InputToTetrisPieceTransformer;
 import te.tetris.core.TetrisEngine;
 import te.tetris.core.domain.TetrisPiece;
 
+/**
+ * Entry point to the application.
+ */
 public class TetrisApplication {
 
     public static void main(String[] args) throws IOException {
