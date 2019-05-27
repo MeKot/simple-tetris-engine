@@ -1,12 +1,14 @@
 package te.tetris.core;
 
 import java.util.LinkedList;
-import java.util.List;
 
-public final class Utils {
+/**
+ * Helper class that prints a tetris grid to the console in a nice, readable format.
+ */
+public final class TetrisGridPrinter {
     private static final char TETRIS_BLOCK = 9_633;
 
-    private Utils() {}
+    private TetrisGridPrinter() {}
 
     public static void printTetrisGrid(LinkedList<boolean[]> grid) {
         System.out.println();
@@ -14,8 +16,7 @@ public final class Utils {
         grid.forEach( line -> {
             StringBuilder rowAsString = new StringBuilder("| ");
             for (boolean value : line) {
-                rowAsString.append(value ? TETRIS_BLOCK : " ")
-                        .append(" ");
+                rowAsString.append(value ? TETRIS_BLOCK : " ").append(" ");
             }
             System.out.println(rowAsString.append("|").toString());
         });

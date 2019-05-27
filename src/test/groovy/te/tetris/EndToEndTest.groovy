@@ -10,7 +10,7 @@ class EndToEndTest extends Specification {
             File inputFile = getFileFromResourcesDirectory(inputFileName)
             File outputFile = File.createTempFile("tetris-engine-output-", ".txt")
 
-        and: 'get the expected contents for the output file'
+        and: 'the expected contents for the output file'
             List<String> expectedOutput = getExpectedOutputForInputFile(inputFileName)
 
         when: 'we run the application'
@@ -22,7 +22,7 @@ class EndToEndTest extends Specification {
         then: 'it is the correct number of lines'
             actualOutput.size() == expectedOutput.size()
 
-        and: 'matches the expected output line-by-line'
+        and: 'matches the expected output line-for-line'
             [actualOutput, expectedOutput].transpose().each { actual, expected ->
                 assert actual == expected
             }

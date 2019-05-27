@@ -118,19 +118,24 @@ class TetrisEngineTest extends Specification {
             tetrisEngine.generateTetrisGrid(pieces).size() == 3
     }
 
-    def "getAdjustedCoordinates() returns the position-adjusted coordinates for a piece"() {
+    def "convertDimensionsToCoordinates() converts dimensions to coordinates by adding the position to each"() {
         given:
-            TetrisPiece squarePiece = new TetrisPiece(Shape.Q, 3)
+            TetrisPiece squareAt0 = new TetrisPiece(Shape.Q, 0)
+            TetrisPiece squareAt3 = new TetrisPiece(Shape.Q, 3)
             int[][] copyOfOriginalCoordinates = [[0, 1], [0, 1]]
 
         when:
-            int[][] adjustedCoordinates = tetrisEngine.getAdjustedCoordinates(squarePiece)
+            int[][] squareAt0Coordinates = tetrisEngine.convertDimensionsToCoordinates(squareAt0)
+            int[][] squareAt3Coordinates = tetrisEngine.convertDimensionsToCoordinates(squareAt3)
 
-        then: 'the coordinates are all adjusted by the position of the piece'
-            adjustedCoordinates == [[3, 4], [3, 4]] as int[][]
+        then: 'the dimensions are all adjusted by the position of the piece'
+            squareAt3Coordinates == [[3, 4], [3, 4]] as int[][]
 
-        and: 'we did not mutate the original coordinates for the square'
-            squarePiece.shape.coordinates == copyOfOriginalCoordinates
+        and: 'the dimensions for the piece at position 0 were already its coordinates'
+            squareAt0Coordinates == copyOfOriginalCoordinates
+
+        and: 'we did not mutate the original dimensions for the square at position 3'
+            squareAt3.shape.dimensions == copyOfOriginalCoordinates
     }
 
 }

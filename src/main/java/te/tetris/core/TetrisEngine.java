@@ -8,7 +8,16 @@ import java.util.ListIterator;
 import te.tetris.core.domain.Shape;
 import te.tetris.core.domain.TetrisPiece;
 
-//TODO: Add documentation (especially about why I chose LinkedList data structure)
+/**
+ * Stateless simulator of {@link TetrisPiece}s being dropped into a grid from a particular position
+ * at the top, returning the resulting grid after all pieces have been dropped in.
+ *
+ * <p></p>Uses a {@link LinkedList} to store the tetris grid and <code>boolean[]</code>s to
+ * represent the lines of the grid.  The {@link LinkedList} was chosen to minimize memory overhead,
+ * simplify growing the grid, and simplify shrinking the grid (i.e. line clears).  The last case
+ * in particular will surpass arrays/lists in runtime as the grid grows sufficiently large since
+ * no shifting of the grid is required when removing line clears.
+ */
 public class TetrisEngine {
     private static final int GRID_WIDTH = 10;
 
@@ -16,89 +25,82 @@ public class TetrisEngine {
         LinkedList<boolean[]> grid = new LinkedList<>();
 
         for (TetrisPiece piece : pieces) {
-            int[][] adjustedCoordinates = getAdjustedCoordinates(piece);
-
+            int[][] coordinates = convertDimensionsToCoordinates(piece);
             ListIterator<boolean[]> gridIterator = grid.listIterator();
-            traverseDownToNextPiecePosition(gridIterator, adjustedCoordinates);
-            insertPiece(gridIterator, adjustedCoordinates);
+
+            moveToNextPositionToInsert(gridIterator, coordinates);
+
+            insertPiece(gridIterator, coordinates);
         }
 
-        // It is more efficient (and readable) to process all possible line clears at once
-        // in O(n) complexity since removing from a linked list is O(1) complexity.
-        grid.removeIf(this::isLineClear);
-
-        //TODO: Don't forget to delete me
-        Utils.printTetrisGrid(grid);
+        removeAllLineClears(grid);
 
         return grid;
     }
 
-    //TODO: Determine if this is truly necessary
-    private void ensureGridHasEnoughSpaceForPiece(LinkedList<boolean[]> grid, TetrisPiece piece) {
-        while (grid.size() < piece.getShape().getCoordinates().length) {
-            grid.addFirst(emptyLine());
-        }
-    }
-
     /**
-     * Finds next piece's position by traversing down the grid line-by-line, comparing all the next
-     * piece's coordinates to the current line and halting if any coordinates are already set (i.e.
-     * a block is already present there).
+     * Finds the position ti insert the next piece by traversing down the grid line-by-line,
+     * comparing all the next piece's coordinates to the current line and halting if any coordinates
+     * are already set (i.e. a block is already present there).
      *
-     * Most blocks take up more than a single line (Q, Z, S, etc.) so this method merely acts as an
-     * approximation of whether we're at the next piece's position or not, and always ends in one of
-     * the following three circumstances:
+     * <p></p> The Algorithm: <br/>
      *
-     * <br/>1) We walked all the way down to the bottom of the grid, encountering no other blocks.
-     * We can then simply insert the piece in reverse order from where we are back up the grid.
+     * Of course we could walk down or up the grid from a particular position to determine whether
+     * our piece will fit, however the complexity of that up and down traversal turns out to not be
+     * necessary if we instead use an approximation coupled with a final check. <br/>
      *
-     * <br/>2) We walked down and encountered a block and stopped right before it.  We can then
-     * simply insert the piece in reverse order from where we are back up the grid.
+     * <p></p> The Approximation: <br/>
      *
-     * <br/>3) We walked down and encountered a block and stopped right <b>on</b> it (i.e. we're
-     * currently on top of an existing piece). This is the edge case that causes this method to be
-     * an approximation, however it only requires stepping backwards up the grid once before
-     * beginning the insertion process.  We could handle this situation in this method fully however
-     * doing so would duplicate the efforts that the insertion logic puts forth in {@link
-     * #insertPiece(ListIterator, int[][])}
+     * Instead of checking the true coordinates a piece could be positioned at we instead pretend
+     * the piece to insert was crushed down to a single line and then check that crushed piece
+     * against the current line we are on (e.g. if we are inserting a Z piece we end up checking 4
+     * positions on the current line even though, in reality, the Z piece takes up 2 positions on
+     * one line and 2 on the other). When we encounter an overlapping piece we know we're
+     * approximately at the next piece's position. We then resolve this approximation by checking
+     * the bottom most coordinates of the piece to insert.  If those are overlapping we back our
+     * iterator up by one line.  If there is no overlap then we know `gridIterator` is already at
+     * the position to insert the next piece.
      */
-    private void traverseDownToNextPiecePosition(ListIterator<boolean[]> gridIterator, int[][] adjustedCoordinates) {
+    private void moveToNextPositionToInsert(ListIterator<boolean[]> gridIterator, int[][] peiceCoordinates) {
         boolean isApproximatelyAtNextPosition = false;
 
         while (gridIterator.hasNext() && !isApproximatelyAtNextPosition) {
             boolean[] line = gridIterator.next();
 
-            for (int[] coordinates : adjustedCoordinates) {
+            for (int[] coordinates : peiceCoordinates) {
                 if (isOverlappingExistingPiece(line, coordinates)) {
                     isApproximatelyAtNextPosition = true;
+                }
+            }
+
+            if (isApproximatelyAtNextPosition) {
+                int[] bottomCoordinatesOfPiece = peiceCoordinates[peiceCoordinates.length - 1];
+                if (isOverlappingExistingPiece(line, bottomCoordinatesOfPiece)) {
+                    gridIterator.previous();
                 }
             }
         }
     }
 
-    //TODO: Add documentation
+    /**
+     * Inserts a piece backwards, starting from where the `gridIterator` is at and moving backwards.
+     * If the grid does not contain the necessary space to insert the piece more lines are added at
+     * the top.
+     */
     private void insertPiece(ListIterator<boolean[]> gridIterator, int[][] pieceCoordinates) {
         int coordinateIndex = pieceCoordinates.length - 1;
-        boolean isPieceFullyInserted = false;
-        boolean isApproximationHandled = false;
+        boolean isPieceFullyOnGrid = false;
 
-        while (!isPieceFullyInserted) {
+        while (!isPieceFullyOnGrid) {
             if (gridIterator.hasPrevious()) {
                 boolean[] line = gridIterator.previous();
 
-                // The first time we iterate over the coordinates of the piece to insert we have to check if
-                // we're overlapping with any existing pieces.  All other iterations can ignore this check.
-                if (!isApproximationHandled && isOverlappingExistingPiece(line, pieceCoordinates[coordinateIndex])) {
-                    isApproximationHandled = true;
-                    continue;
-                }
-
-                for (int coordinate : pieceCoordinates[coordinateIndex]) {
+                for (int coordinate : pieceCoordinates[coordinateIndex--]) {
                     line[coordinate] = true;
                 }
 
-                if (--coordinateIndex < 0) {
-                    isPieceFullyInserted = true;
+                if (coordinateIndex < 0) {
+                    isPieceFullyOnGrid = true;
                 }
             } else {
                 gridIterator.add(emptyLine());
@@ -106,6 +108,10 @@ public class TetrisEngine {
         }
     }
 
+    /**
+     * @return true if any of the provided coordinates in line are already set to true, false
+     * otherwise.
+     */
     private boolean isOverlappingExistingPiece(boolean[] line, int[] coordinates) {
         for (int coordinate : coordinates) {
             if (line[coordinate]) return true;
@@ -114,11 +120,13 @@ public class TetrisEngine {
     }
 
     /**
-     * Returns the coordinates a piece takes up adjusted over by their {@link TetrisPiece#getPosition()}
-     * so they represent the correct coordinates to insert them into the grid at.  <br/><br/>
+     * Converts the dimensions of a piece to the coordinates to insert the piece into the grid at by
+     * shifting each of their values over by the size by {@link TetrisPiece#getPosition()} values.
+     * <br/><br/>
      *
-     * For example a {@link Shape#Q} at position 0 will take up [0, 1] for the first row and [0, 1]
-     * for the second row, resulting in:
+     * For example a {@link Shape#Q} at position 0 has the dimensions [0, 1] on the first row and
+     * [0, 1] for the second row.  In this case the dimensions of the piece are already the
+     * coordinates. When inserted into the grid they would appear as:
      *
      * <pre>
      *        □ □
@@ -127,8 +135,9 @@ public class TetrisEngine {
      *        0 1 2 3 4 5 6 7 8 9
      * </pre>
      *
-     * However a {@link Shape#Q} at position 3 will take up [3, 4] for the first row and [3, 4] for
-     * the second row, resulting in:
+     * However a {@link Shape#Q} at position 3 has the same dimensions but the coordinates would be
+     * adjusted by 3 so they would result in [3, 4] for the first row and [3, 4] for the second row,
+     * which would appear on the grid as:
      *
      * <pre>
      *              □ □
@@ -137,28 +146,36 @@ public class TetrisEngine {
      *        0 1 2 3 4 5 6 7 8 9
      * </pre>
      */
-    protected int[][] getAdjustedCoordinates(TetrisPiece piece) {
-        int[][] coordinates = piece.getShape().getCoordinates();
-        int[][] adjustedCoordinates = new int[coordinates.length][];
+    protected int[][] convertDimensionsToCoordinates(TetrisPiece piece) {
+        int[][] dimensions = piece.getShape().getDimensions();
+        int[][] coordinates = new int[dimensions.length][];
 
-        for (int i = 0; i < adjustedCoordinates.length; i++) {
-            int[] adjustedCoordinate = Arrays.copyOf(coordinates[i], coordinates[i].length);
+        for (int i = 0; i < coordinates.length; i++) {
+            int[] dimensionsCopy = Arrays.copyOf(dimensions[i], dimensions[i].length);
 
-            for (int j = 0; j < adjustedCoordinate.length; j++) {
-                adjustedCoordinate[j] += piece.getPosition();
+            for (int j = 0; j < dimensionsCopy.length; j++) {
+                dimensionsCopy[j] += piece.getPosition();
             }
 
-            adjustedCoordinates[i] = adjustedCoordinate;
+            coordinates[i] = dimensionsCopy;
         }
 
-        return adjustedCoordinates;
+        return coordinates;
     }
 
-    private boolean isLineClear(boolean[] line) {
-        for (boolean b : line) {
-            if (!b) return false;
-        }
-        return true;
+    /**
+     * Iterates through the entire grid once, removing any lines that are completely full/set.
+     *
+     * <p></p>Removing elements from a linked list is O(1) complexity so this operation takes O(n).
+     */
+    private void removeAllLineClears(LinkedList<boolean[]> grid) {
+        grid.removeIf( line -> {
+            for (boolean position : line) {
+                if (!position) return false;
+            }
+
+            return true;
+        });
     }
 
     private boolean[] emptyLine() {

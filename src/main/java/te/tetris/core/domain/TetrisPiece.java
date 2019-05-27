@@ -3,7 +3,7 @@ package te.tetris.core.domain;
 import java.util.StringJoiner;
 
 /**
- * Represents a {@link Shape} and a position at which said shape will be dropped into the
+ * Represents a {@link Shape} and a position/index at which said shape will be dropped into the
  * tetris grid.
  */
 public class TetrisPiece {

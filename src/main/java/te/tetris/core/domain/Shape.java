@@ -4,7 +4,8 @@ import java.util.StringJoiner;
 
 /**
  * Represents the kinds of tetris shapes that can be parsed from the command line and the dimensions
- * of how much space they take up on our tetris grid.
+ * of how much space they take up on our tetris grid (written as though they were inserted at
+ * position 0).
  *
  * For example: a {@link #Q} has the dimensions [[0,1],[0,1]] because they take up 4 places on the
  * grid in a square formation:
@@ -86,19 +87,19 @@ public enum Shape {
     J("J", new int[][]{new int[]{1}, new int[]{1}, new int[]{0, 1}});
 
     private String inputCharacter;
-    private int[][] coordinates;
+    private int[][] dimensions;
 
-    Shape(String character, int[][] coordinates) {
+    Shape(String character, int[][] dimensions) {
         this.inputCharacter = character;
-        this.coordinates = coordinates;
+        this.dimensions = dimensions;
     }
 
     public String getInputCharacter() {
         return inputCharacter;
     }
 
-    public int[][] getCoordinates() {
-        return coordinates;
+    public int[][] getDimensions() {
+        return dimensions;
     }
 
     @Override
