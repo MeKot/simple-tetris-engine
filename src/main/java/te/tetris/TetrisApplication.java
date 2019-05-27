@@ -2,6 +2,7 @@ package te.tetris;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 import te.tetris.core.InputOutputFileHandler;
@@ -28,8 +29,9 @@ public class TetrisApplication {
     public void run() throws IOException {
         fileHandler.eachLineOfInput(inputLine -> {
             List<TetrisPiece> pieces = inputTransformer.transform(inputLine);
-            int gridHeight = tetrisEngine.runSimulationThenFindResultingGridHeight(pieces);
-            return String.valueOf(gridHeight);
+            LinkedList<boolean[]> grid = tetrisEngine.generateResultingGrid(pieces);
+
+            return String.valueOf(grid.size());
         });
     }
 

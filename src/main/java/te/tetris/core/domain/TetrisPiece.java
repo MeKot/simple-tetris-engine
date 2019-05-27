@@ -3,19 +3,19 @@ package te.tetris.core.domain;
 import java.util.StringJoiner;
 
 /**
- * Represents a {@link TetrisShape} and a position at which said shape will be dropped into the
+ * Represents a {@link Shape} and a position at which said shape will be dropped into the
  * tetris grid.
  */
 public class TetrisPiece {
-    private final TetrisShape shape;
+    private final Shape shape;
     private final int position;
 
-    public TetrisPiece(TetrisShape shape, int position) {
+    public TetrisPiece(Shape shape, int position) {
         this.shape = shape;
         this.position = position;
     }
 
-    public TetrisShape getShape() {
+    public Shape getShape() {
         return shape;
     }
 

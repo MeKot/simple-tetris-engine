@@ -4,39 +4,28 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import te.tetris.core.domain.TetrisShape;
+import te.tetris.core.domain.Shape;
 import te.tetris.core.domain.TetrisPiece;
-import te.tetris.core.domain.exceptions.TetrisPieceParsingException;
 
 /**
- * Transforms a line of input into a {@link List} of type {@link TetrisPiece}.
+ * Transforms a lines of input from a file into {@link List}s of {@link TetrisPiece}s. <br/>
  *
- * Although the constraints of the assignment specifically state that input validation is
- * unnecessary I could very easily provide incorrect values in tests that could be hard to track
- * down. So for the sake of simplifying testing and completeness I have added a few places where a
- * {@link TetrisPieceParsingException} can be thrown.
+ * Note: validation if input from the file falls outside the scope of this application so it is
+ * explicitly ignored. Exceptions will surely be thrown if invalid input is provided.
  */
 public class InputToTetrisPieceTransformer {
 
     public List<TetrisPiece> transform(String inputLine) {
-        if (inputLine.length() < 2) throw new TetrisPieceParsingException();
-
         return Arrays.stream(inputLine.split(","))
                 .map(this::toTetrisPiece)
                 .collect(Collectors.toList());
     }
 
     private TetrisPiece toTetrisPiece(String letterAndDigit) {
-        char letter = letterAndDigit.charAt(0);
-        char digit = letterAndDigit.charAt(1);
-
-        return new TetrisPiece(parseShape(letter), Character.digit(digit, 10));
+        return new TetrisPiece(
+                Shape.valueOf(letterAndDigit.substring(0, 1)),
+                Integer.parseInt(letterAndDigit.substring(1, 2))
+        );
     }
 
-    private TetrisShape parseShape(char letter) {
-        return Arrays.stream(TetrisShape.values())
-                .filter(s -> s.getInputCharacter() == letter)
-                .findFirst()
-                .orElseThrow(() -> new TetrisPieceParsingException(letter));
-    }
 }
