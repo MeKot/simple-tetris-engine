@@ -19,7 +19,7 @@ class TetrisEngineTest extends Specification {
             pieces = [new TetrisPiece(shape, 0)]
 
         expect:
-            tetrisEngine.generateResultingGrid(pieces).size() == height
+            tetrisEngine.generateTetrisGrid(pieces).size() == height
 
         where:
             shape   || height
@@ -40,7 +40,7 @@ class TetrisEngineTest extends Specification {
             ]
 
         expect:
-            tetrisEngine.generateResultingGrid(pieces).size() == 2
+            tetrisEngine.generateTetrisGrid(pieces).size() == 2
     }
 
     def "can can handle two pieces of the same shape that need to stack"() {
@@ -51,7 +51,7 @@ class TetrisEngineTest extends Specification {
             ]
 
         expect:
-            tetrisEngine.generateResultingGrid(pieces).size() == 4
+            tetrisEngine.generateTetrisGrid(pieces).size() == 4
     }
 
     def "can handle 2 pieces of different shape that need to stack"() {
@@ -62,7 +62,7 @@ class TetrisEngineTest extends Specification {
             ]
 
         expect:
-            tetrisEngine.generateResultingGrid(pieces).size() == 4
+            tetrisEngine.generateTetrisGrid(pieces).size() == 4
     }
 
     def "can handle 3 pieces where the third interlocks between the previous two"() {
@@ -74,7 +74,7 @@ class TetrisEngineTest extends Specification {
             ]
 
         expect:
-            tetrisEngine.generateResultingGrid(pieces).size() == 3
+            tetrisEngine.generateTetrisGrid(pieces).size() == 3
     }
 
     def "can handle example 1 from requirements document"() {
@@ -86,7 +86,7 @@ class TetrisEngineTest extends Specification {
             ]
 
         expect:
-            tetrisEngine.generateResultingGrid(pieces).size() == 1
+            tetrisEngine.generateTetrisGrid(pieces).size() == 1
     }
 
     def "can handle example 2 from requirements document"() {
@@ -98,7 +98,7 @@ class TetrisEngineTest extends Specification {
             ]
 
         expect:
-            tetrisEngine.generateResultingGrid(pieces).size() == 4
+            tetrisEngine.generateTetrisGrid(pieces).size() == 4
     }
 
     def "can handle example 3 from requirements document"() {
@@ -115,7 +115,7 @@ class TetrisEngineTest extends Specification {
             ]
 
         expect:
-            tetrisEngine.generateResultingGrid(pieces).size() == 3
+            tetrisEngine.generateTetrisGrid(pieces).size() == 3
     }
 
     def "getAdjustedCoordinates() returns the position-adjusted coordinates for a piece"() {

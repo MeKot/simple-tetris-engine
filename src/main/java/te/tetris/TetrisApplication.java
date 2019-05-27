@@ -29,7 +29,7 @@ public class TetrisApplication {
     public void run() throws IOException {
         fileHandler.eachLineOfInput(inputLine -> {
             List<TetrisPiece> pieces = inputTransformer.transform(inputLine);
-            LinkedList<boolean[]> grid = tetrisEngine.generateResultingGrid(pieces);
+            LinkedList<boolean[]> grid = tetrisEngine.generateTetrisGrid(pieces);
 
             return String.valueOf(grid.size());
         });

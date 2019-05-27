@@ -8,10 +8,11 @@ import java.util.ListIterator;
 import te.tetris.core.domain.Shape;
 import te.tetris.core.domain.TetrisPiece;
 
+//TODO: Add documentation
 public class TetrisEngine {
     private static final int GRID_WIDTH = 10;
 
-    public LinkedList<boolean[]> generateResultingGrid(List<TetrisPiece> pieces) {
+    public LinkedList<boolean[]> generateTetrisGrid(List<TetrisPiece> pieces) {
         LinkedList<boolean[]> grid = new LinkedList<>();
 
         for (TetrisPiece piece : pieces) {
