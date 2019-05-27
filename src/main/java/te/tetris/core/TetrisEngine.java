@@ -8,7 +8,7 @@ import java.util.ListIterator;
 import te.tetris.core.domain.Shape;
 import te.tetris.core.domain.TetrisPiece;
 
-//TODO: Add documentation
+//TODO: Add documentation (especially about why I chose LinkedList data structure)
 public class TetrisEngine {
     private static final int GRID_WIDTH = 10;
 
@@ -27,6 +27,7 @@ public class TetrisEngine {
         // in O(n) complexity since removing from a linked list is O(1) complexity.
         grid.removeIf(this::isLineClear);
 
+        //TODO: Don't forget to delete me
         Utils.printTetrisGrid(grid);
 
         return grid;
