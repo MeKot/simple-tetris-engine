@@ -6,6 +6,13 @@ plugins {
     idea
 }
 
+// Tell Gradle what to add to the manifest file for the resulting JAR
+val jar by tasks.getting(Jar::class) {
+    manifest {
+        attributes["Main-Class"] = "te.tetris.TetrisApplication"
+    }
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
