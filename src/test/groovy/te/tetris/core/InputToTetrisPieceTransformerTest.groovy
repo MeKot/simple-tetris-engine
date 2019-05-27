@@ -24,7 +24,7 @@ class InputToTetrisPieceTransformerTest extends Specification {
 
         and: 'a line representing the input for all of those pieces'
             String line = expectedPieces
-                    .collect({ piece -> "${piece.shape.inputCharacter}${piece.position}" })
+                    .collect({ piece -> "${piece.shape.name()}${piece.position}" })
                     .join(",")
 
         expect: 'that transforming that line yields the expected pieces'

@@ -1,7 +1,5 @@
 package te.tetris.core.domain;
 
-import java.util.StringJoiner;
-
 /**
  * Represents the kinds of tetris shapes that can be parsed from the command line and the dimensions
  * of how much space they take up on our tetris grid (written as though they were inserted at
@@ -23,7 +21,7 @@ public enum Shape {
      *      □ □
      * </pre>
      */
-    Q("Q", new int[][]{new int[]{0, 1}, new int[]{0, 1}}),
+    Q(new int[][]{new int[]{0, 1}, new int[]{0, 1}}),
 
     /**
      * Represents the following tetris shape:
@@ -32,7 +30,7 @@ public enum Shape {
      *      □ □ □ □
      * </pre>
      */
-    I("I", new int[][]{new int[]{0, 1, 2, 3},}),
+    I(new int[][]{new int[]{0, 1, 2, 3},}),
 
     /**
      * Represents the following tetris shape:
@@ -42,7 +40,7 @@ public enum Shape {
      *        □ □
      * </pre>
      */
-    Z("Z", new int[][]{new int[]{0, 1}, new int[]{1, 2}}),
+    Z(new int[][]{new int[]{0, 1}, new int[]{1, 2}}),
 
     /**
      * Represents the following tetris shape:
@@ -52,7 +50,7 @@ public enum Shape {
      *      □ □
      * </pre>
      */
-    S("S", new int[][]{new int[]{1, 2}, new int[]{0, 1}}),
+    S(new int[][]{new int[]{1, 2}, new int[]{0, 1}}),
 
     /**
      * Represents the following tetris shape:
@@ -62,7 +60,7 @@ public enum Shape {
      *        □
      * </pre>
      */
-    T("T", new int[][]{new int[]{0, 1, 2}, new int[]{1}}),
+    T(new int[][]{new int[]{0, 1, 2}, new int[]{1}}),
 
     /**
      * Represents the following tetris shape:
@@ -73,7 +71,7 @@ public enum Shape {
      *       □ □
      * </pre>
      */
-    L("L", new int[][]{new int[]{0}, new int[]{0}, new int[]{0, 1}}),
+    L(new int[][]{new int[]{0}, new int[]{0}, new int[]{0, 1}}),
 
     /**
      * Represents the following tetris shape:
@@ -84,18 +82,12 @@ public enum Shape {
      *       □ □
      * </pre>
      */
-    J("J", new int[][]{new int[]{1}, new int[]{1}, new int[]{0, 1}});
+    J(new int[][]{new int[]{1}, new int[]{1}, new int[]{0, 1}});
 
-    private String inputCharacter;
     private int[][] dimensions;
 
-    Shape(String character, int[][] dimensions) {
-        this.inputCharacter = character;
+    Shape(int[][] dimensions) {
         this.dimensions = dimensions;
-    }
-
-    public String getInputCharacter() {
-        return inputCharacter;
     }
 
     public int[][] getDimensions() {
@@ -104,8 +96,6 @@ public enum Shape {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Shape.class.getSimpleName() + "(", ")")
-                .add("inputCharacter=" + inputCharacter)
-                .toString();
+        return name();
     }
 }
