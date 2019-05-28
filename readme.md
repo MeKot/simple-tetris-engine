@@ -17,6 +17,7 @@ To build an executable JAR from the root of the project use:
 ```
 ./gradlew jar
 ```
+The resulting JAR file will be located in the `build/libs` directory.
 
 ### Running tests
 To run all tests from the root of the project use:
