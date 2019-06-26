@@ -37,7 +37,7 @@ public class TetrisGridGenerator {
 
             ListIterator<boolean[]> gridIterator = grid.listIterator();
 
-            moveToPositionOfNextPiece(gridIterator, pieceCoordinates);
+            moveToPositionToInsertPiece(gridIterator, pieceCoordinates);
             insertPiece(gridIterator, pieceCoordinates);
             handleLineClears(gridIterator, pieceCoordinates);
         }
@@ -55,7 +55,7 @@ public class TetrisGridGenerator {
      * This logic results in either landing on the correct position for the next piece or
      * overshooting by one, which we then simply backup a line to correct.
      */
-    private void moveToPositionOfNextPiece(ListIterator<boolean[]> gridIterator, int[][] pieceCoordinates) {
+    private void moveToPositionToInsertPiece(ListIterator<boolean[]> gridIterator, int[][] pieceCoordinates) {
         boolean atNextPosition = false;
 
         while (gridIterator.hasNext() && !atNextPosition) {
@@ -117,16 +117,14 @@ public class TetrisGridGenerator {
     }
 
     /**
-     * Walks down the lines of the grid the Tetris piece we just inserted resides on and
-     * removes any lines that are line-clears (i.e. entire line is set to true).
-     *
-     * This operation is O(1) since the number of lines a given piece can consume is constant
-     * and the cost of removing a value we're already at in a linked list is O(1).
+     * Revisits the lines of the grid we just inserted our piece into to see if any of those lines
+     * are now line-clears (i.e. entire line is set to true).  If they are, they're removed.
+     * The complexity of this is effectively O(1).
      */
     private void handleLineClears(ListIterator<boolean[]> gridIterator, int[][] pieceCoordinates) {
         int numRowsToCheck = pieceCoordinates.length;
 
-        while(numRowsToCheck-- > 0) {
+        while (numRowsToCheck-- > 0) {
             if (isLineClear(gridIterator.next())) {
                 gridIterator.remove();
             }
@@ -134,8 +132,8 @@ public class TetrisGridGenerator {
     }
 
     private boolean isLineClear(boolean[] line) {
-        for(boolean position : line) {
-            if(!position) return false;
+        for (boolean position : line) {
+            if (!position) return false;
         }
 
         return true;
