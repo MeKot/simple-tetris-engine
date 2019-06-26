@@ -10,7 +10,7 @@ class TetrisPieceCoordinatesGeneratorTest extends Specification {
     @Subject
     TetrisPieceCoordinatesGenerator transformer = []
 
-    def "convertDimensionsToCoordinates() converts dimensions to coordinates by adding the position to each"() {
+    def "converts dimensions to coordinates by adding the piece's position to each"() {
         given:
             TetrisPiece squareAt0 = new TetrisPiece(Shape.Q, 0)
             TetrisPiece squareAt3 = new TetrisPiece(Shape.Q, 3)
