@@ -8,7 +8,7 @@ import te.tetris.core.domain.TetrisPiece
 class TetrisPieceCoordinatesGeneratorTest extends Specification {
 
     @Subject
-    TetrisPieceCoordinatesGenerator transformer = []
+    TetrisPieceCoordinatesGenerator coordinatesGenerator = []
 
     def "converts dimensions to coordinates by adding the piece's position to each"() {
         given:
@@ -17,8 +17,8 @@ class TetrisPieceCoordinatesGeneratorTest extends Specification {
             int[][] copyOfOriginalCoordinates = [[0, 1], [0, 1]]
 
         when:
-            int[][] squareAt0Coordinates = transformer.generate(squareAt0)
-            int[][] squareAt3Coordinates = transformer.generate(squareAt3)
+            int[][] squareAt0Coordinates = coordinatesGenerator.generate(squareAt0)
+            int[][] squareAt3Coordinates = coordinatesGenerator.generate(squareAt3)
 
         then: 'the dimensions are all adjusted by the position of the piece'
             squareAt3Coordinates == [[3, 4], [3, 4]] as int[][]
