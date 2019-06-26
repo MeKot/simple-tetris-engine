@@ -17,11 +17,15 @@ import te.tetris.core.domain.TetrisPiece;
  * since no shifting of the grid is required when removing line clears.
  */
 public class TetrisGridGenerator {
-    private static final int GRID_WIDTH = 10;
-
+    private int gridWidth;
     private TetrisPieceCoordinatesGenerator coordinatesGenerator;
 
     public TetrisGridGenerator() {
+        this(10);
+    }
+
+    public TetrisGridGenerator(int gridWidth) {
+        this.gridWidth = gridWidth;
         this.coordinatesGenerator = new TetrisPieceCoordinatesGenerator();
     }
 
@@ -29,15 +33,14 @@ public class TetrisGridGenerator {
         LinkedList<boolean[]> grid = new LinkedList<>();
 
         for (TetrisPiece piece : pieces) {
-            int[][] coordinates = coordinatesGenerator.generate(piece);
+            int[][] pieceCoordinates = coordinatesGenerator.generate(piece);
 
             ListIterator<boolean[]> gridIterator = grid.listIterator();
-            moveToPositionOfNextPiece(gridIterator, coordinates);
-            insertPiece(gridIterator, coordinates);
-        }
 
-        //TODO: Try switching to eagerly checking for line-clears instead of lazily checking @ end
-        removeAllLineClears(grid);
+            moveToPositionOfNextPiece(gridIterator, pieceCoordinates);
+            insertPiece(gridIterator, pieceCoordinates);
+            handleLineClears(gridIterator, pieceCoordinates);
+        }
 
         return grid;
     }
@@ -49,8 +52,8 @@ public class TetrisGridGenerator {
      *
      * Since rotation isn't allowed in this simulation checking whether a piece fits in a given
      * space reduces to checking whether any coordinate of the piece overlaps with the current line.
-     * This logic results in either landing on the correct next position or overshooting by one,
-     * which we then simply backup a line to correct.
+     * This logic results in either landing on the correct position for the next piece or
+     * overshooting by one, which we then simply backup a line to correct.
      */
     private void moveToPositionOfNextPiece(ListIterator<boolean[]> gridIterator, int[][] pieceCoordinates) {
         boolean atNextPosition = false;
@@ -58,14 +61,14 @@ public class TetrisGridGenerator {
         while (gridIterator.hasNext() && !atNextPosition) {
             boolean[] line = gridIterator.next();
 
-            for (int[] coordinates : pieceCoordinates) {
-                if (isOverlappingExistingPiece(line, coordinates)) {
+            for (int[] lineCoordinates : pieceCoordinates) {
+                if (isOverlappingExistingPiece(line, lineCoordinates)) {
                     atNextPosition = true;
                     break;
                 }
             }
 
-            if(atNextPosition && isOneLineTooFarDown(pieceCoordinates, line)) {
+            if (atNextPosition && isOneLineTooFarDown(pieceCoordinates, line)) {
                 gridIterator.previous();
             }
         }
@@ -77,9 +80,9 @@ public class TetrisGridGenerator {
     }
 
     /**
-     * Inserts a piece backwards, starting from where the <code>gridIterator</code> is at and
-     * moving backwards. If the grid does not contain the necessary space to insert the piece
-     * empty lines are added to the top of it.
+     * Inserts a piece backwards, starting from where the <code>gridIterator</code> is at and moving
+     * backwards. If the grid does not contain the necessary space to insert the piece empty lines
+     * are added to the top of it.
      */
     private void insertPiece(ListIterator<boolean[]> gridIterator, int[][] pieceCoordinates) {
         int coordinateIndex = pieceCoordinates.length - 1;
@@ -88,7 +91,7 @@ public class TetrisGridGenerator {
             if (gridIterator.hasPrevious()) {
                 insertPieceBackwards(gridIterator, pieceCoordinates[coordinateIndex--]);
             } else {
-                gridIterator.add(emptyLine());
+                gridIterator.add(new boolean[gridWidth]);
             }
         }
     }
@@ -102,8 +105,8 @@ public class TetrisGridGenerator {
     }
 
     /**
-     * @return true if any of the provided coordinates in `line` are already set to true,
-     * false otherwise.
+     * @return true if any of the provided coordinates in `line` are already set to true, false
+     * otherwise.
      */
     private boolean isOverlappingExistingPiece(boolean[] line, int[] coordinates) {
         for (int coordinate : coordinates) {
@@ -114,22 +117,28 @@ public class TetrisGridGenerator {
     }
 
     /**
-     * Iterates through the entire grid once, removing any lines that are completely full/set.
+     * Walks down the lines of the grid the Tetris piece we just inserted resides on and
+     * removes any lines that are line-clears (i.e. entire line is set to true).
      *
-     * <p></p>Removing elements from a linked list is O(1) complexity so this operation takes O(n).
+     * This operation is O(1) since the number of lines a given piece can consume is constant
+     * and the cost of removing a value we're already at in a linked list is O(1).
      */
-    private void removeAllLineClears(LinkedList<boolean[]> grid) {
-        grid.removeIf(line -> {
-            for (boolean position : line) {
-                if (!position) return false;
-            }
+    private void handleLineClears(ListIterator<boolean[]> gridIterator, int[][] pieceCoordinates) {
+        int numRowsToCheck = pieceCoordinates.length;
 
-            return true;
-        });
+        while(numRowsToCheck-- > 0) {
+            if (isLineClear(gridIterator.next())) {
+                gridIterator.remove();
+            }
+        }
     }
 
-    private boolean[] emptyLine() {
-        return new boolean[GRID_WIDTH];
+    private boolean isLineClear(boolean[] line) {
+        for(boolean position : line) {
+            if(!position) return false;
+        }
+
+        return true;
     }
 
 }
