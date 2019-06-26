@@ -1,10 +1,8 @@
-package te.tetris.core
+package te.tetris.core.io
 
 
 import spock.lang.Specification
 import spock.lang.Subject
-import te.tetris.TestingUtils
-import te.tetris.core.InputOutputFileHandler
 
 class InputOutputFileHandlerTest extends Specification {
 
@@ -23,8 +21,8 @@ class InputOutputFileHandlerTest extends Specification {
     }
 
     def cleanup() {
-        TestingUtils.deleteQuietly(inputFile)
-        TestingUtils.deleteQuietly(outputFile)
+        inputFile.delete()
+        outputFile.delete()
     }
 
     def "input is read line-by-line, passed through a function, then written as output"() {
@@ -33,7 +31,7 @@ class InputOutputFileHandlerTest extends Specification {
 
         when: 'we process the input file'
             List<String> inputFileContents = []
-            fileHandler.eachLineOfInput({ String input ->
+            fileHandler.processLineFromInput({ String input ->
                 inputFileContents << input
 
                 return input + "-" + input

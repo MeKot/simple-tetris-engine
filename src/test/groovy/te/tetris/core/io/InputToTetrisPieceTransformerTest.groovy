@@ -1,9 +1,10 @@
-package te.tetris.core
+package te.tetris.core.io
 
 import spock.lang.Specification
 import spock.lang.Subject
 import te.tetris.core.domain.Shape
 import te.tetris.core.domain.TetrisPiece
+import te.tetris.core.io.InputToTetrisPieceTransformer
 
 class InputToTetrisPieceTransformerTest extends Specification {
 

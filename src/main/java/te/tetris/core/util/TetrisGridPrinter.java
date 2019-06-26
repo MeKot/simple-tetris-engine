@@ -1,4 +1,4 @@
-package te.tetris.core;
+package te.tetris.core.util;
 
 import java.util.LinkedList;
 

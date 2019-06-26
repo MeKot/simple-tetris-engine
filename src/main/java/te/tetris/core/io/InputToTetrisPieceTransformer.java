@@ -1,4 +1,4 @@
-package te.tetris.core;
+package te.tetris.core.io;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +10,7 @@ import te.tetris.core.domain.TetrisPiece;
 /**
  * Transforms a lines of input from a file into {@link List}s of {@link TetrisPiece}s. <br/>
  *
- * Note: validation if input from the file falls outside the scope of this application so it is
+ * Note: validation of input from the file falls outside the scope of this application so it is
  * explicitly ignored. Exceptions will surely be thrown if invalid input is provided.
  */
 public class InputToTetrisPieceTransformer {

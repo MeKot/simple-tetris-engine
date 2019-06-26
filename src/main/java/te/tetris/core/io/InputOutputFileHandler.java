@@ -1,4 +1,4 @@
-package te.tetris.core;
+package te.tetris.core.io;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -26,7 +26,7 @@ public class InputOutputFileHandler {
         this.outputFile = outputFile;
     }
 
-    public void eachLineOfInput(Function<String, String> inputProcessor) throws IOException {
+    public void processLineFromInput(Function<String, String> inputProcessor) throws IOException {
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(outputFile))) {
             try (Stream<String> lines = Files.lines(inputFile.toPath())) {
                 lines.map(inputProcessor)

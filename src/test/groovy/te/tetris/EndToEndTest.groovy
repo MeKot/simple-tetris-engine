@@ -14,7 +14,7 @@ class EndToEndTest extends Specification {
             List<String> expectedOutput = getExpectedOutputForInputFile(inputFileName)
 
         when: 'we run the application'
-            TetrisApplication.main([inputFile, outputFile] as String[])
+            TetrisApplication.main([inputFile.absolutePath, outputFile.absolutePath] as String[])
 
         and: 'read in the contents of the output file'
             List<String> actualOutput = outputFile.readLines()
@@ -28,11 +28,11 @@ class EndToEndTest extends Specification {
             }
 
         cleanup:
-            TestingUtils.deleteQuietly(outputFile)
+            outputFile.delete()
     }
 
     private static File getFileFromResourcesDirectory(String filename) {
-        return new File(ClassLoader.systemClassLoader.getResource(filename).toURI())
+        return new File(Thread.currentThread().contextClassLoader.getResource(filename).toURI())
     }
 
     private static List<String> getExpectedOutputForInputFile(String inputFileName) {

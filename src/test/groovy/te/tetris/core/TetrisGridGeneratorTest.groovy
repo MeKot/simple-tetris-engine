@@ -6,10 +6,10 @@ import spock.lang.Unroll
 import te.tetris.core.domain.TetrisPiece
 import te.tetris.core.domain.Shape
 
-class TetrisEngineTest extends Specification {
+class TetrisGridGeneratorTest extends Specification {
 
     @Subject
-    TetrisEngine tetrisEngine = []
+    TetrisGridGenerator tetrisEngine = []
 
     @Unroll("#shape.name() by itself results in #height height")
     def "can handle the simplest scenario: a single piece"() {
@@ -17,7 +17,7 @@ class TetrisEngineTest extends Specification {
             List<TetrisPiece> pieces = [new TetrisPiece(shape, 0)]
 
         expect:
-            tetrisEngine.generateTetrisGrid(pieces).size() == height
+            tetrisEngine.generate(pieces).size() == height
 
         where:
             shape   || height
@@ -38,7 +38,7 @@ class TetrisEngineTest extends Specification {
             ]
 
         expect:
-            tetrisEngine.generateTetrisGrid(pieces).size() == 2
+            tetrisEngine.generate(pieces).size() == 2
     }
 
     def "can can handle two pieces of the same shape that need to stack"() {
@@ -49,7 +49,7 @@ class TetrisEngineTest extends Specification {
             ]
 
         expect:
-            tetrisEngine.generateTetrisGrid(pieces).size() == 4
+            tetrisEngine.generate(pieces).size() == 4
     }
 
     def "can handle 2 pieces of different shape that need to stack"() {
@@ -60,7 +60,7 @@ class TetrisEngineTest extends Specification {
             ]
 
         expect:
-            tetrisEngine.generateTetrisGrid(pieces).size() == 4
+            tetrisEngine.generate(pieces).size() == 4
     }
 
     def "can handle 3 pieces where the third interlocks between the previous two"() {
@@ -72,7 +72,7 @@ class TetrisEngineTest extends Specification {
             ]
 
         expect:
-            tetrisEngine.generateTetrisGrid(pieces).size() == 3
+            tetrisEngine.generate(pieces).size() == 3
     }
 
     def "can handle example 1 from requirements document"() {
@@ -84,7 +84,7 @@ class TetrisEngineTest extends Specification {
             ]
 
         expect:
-            tetrisEngine.generateTetrisGrid(pieces).size() == 1
+            tetrisEngine.generate(pieces).size() == 1
     }
 
     def "can handle example 2 from requirements document"() {
@@ -96,7 +96,7 @@ class TetrisEngineTest extends Specification {
             ]
 
         expect:
-            tetrisEngine.generateTetrisGrid(pieces).size() == 4
+            tetrisEngine.generate(pieces).size() == 4
     }
 
     def "can handle example 3 from requirements document"() {
@@ -113,27 +113,7 @@ class TetrisEngineTest extends Specification {
             ]
 
         expect:
-            tetrisEngine.generateTetrisGrid(pieces).size() == 3
-    }
-
-    def "convertDimensionsToCoordinates() converts dimensions to coordinates by adding the position to each"() {
-        given:
-            TetrisPiece squareAt0 = new TetrisPiece(Shape.Q, 0)
-            TetrisPiece squareAt3 = new TetrisPiece(Shape.Q, 3)
-            int[][] copyOfOriginalCoordinates = [[0, 1], [0, 1]]
-
-        when:
-            int[][] squareAt0Coordinates = tetrisEngine.convertDimensionsToCoordinates(squareAt0)
-            int[][] squareAt3Coordinates = tetrisEngine.convertDimensionsToCoordinates(squareAt3)
-
-        then: 'the dimensions are all adjusted by the position of the piece'
-            squareAt3Coordinates == [[3, 4], [3, 4]] as int[][]
-
-        and: 'the dimensions for the piece at position 0 were already its coordinates'
-            squareAt0Coordinates == copyOfOriginalCoordinates
-
-        and: 'we did not mutate the original dimensions for the square at position 3'
-            squareAt3.shape.dimensions == copyOfOriginalCoordinates
+            tetrisEngine.generate(pieces).size() == 3
     }
 
 }
