@@ -11,23 +11,16 @@ class TetrisGridGeneratorTest extends Specification {
     @Subject
     TetrisGridGenerator tetrisEngine = []
 
-    @Unroll("#shape.name() by itself results in #height height")
-    def "can handle the simplest scenario: a single piece"() {
+    @Unroll("#shape.name() by itself results in #shape.dimensions.length height")
+    def "can handle the simplest scenario: a single piece"(Shape shape) {
         given:
             List<TetrisPiece> pieces = [new TetrisPiece(shape, 0)]
 
         expect:
-            tetrisEngine.generate(pieces).size() == height
+            tetrisEngine.generate(pieces).size() == shape.dimensions.length
 
         where:
-            shape   || height
-            Shape.Q || 2
-            Shape.Z || 2
-            Shape.S || 2
-            Shape.T || 2
-            Shape.I || 1
-            Shape.L || 3
-            Shape.J || 3
+            shape << Shape.values()
     }
 
     def "can handle multiple, non-overlapping pieces"() {

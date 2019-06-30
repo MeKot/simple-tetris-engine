@@ -1,7 +1,5 @@
 package te.tetris.core;
 
-import java.util.Arrays;
-
 import te.tetris.core.domain.Shape;
 import te.tetris.core.domain.TetrisPiece;
 
@@ -42,14 +40,12 @@ public class TetrisPieceCoordinatesGenerator {
         int[][] dimensions = piece.getShape().getDimensions();
         int[][] coordinates = new int[dimensions.length][];
 
-        for (int i = 0; i < coordinates.length; i++) {
-            int[] dimensionsCopy = Arrays.copyOf(dimensions[i], dimensions[i].length);
+        for (int row = 0; row < dimensions.length; row++) {
+            coordinates[row] = new int[dimensions[row].length];
 
-            for (int j = 0; j < dimensionsCopy.length; j++) {
-                dimensionsCopy[j] += piece.getPosition();
+            for (int col = 0; col < dimensions[row].length; col++) {
+                coordinates[row][col] = dimensions[row][col] + piece.getPosition();
             }
-
-            coordinates[i] = dimensionsCopy;
         }
 
         return coordinates;

@@ -4,13 +4,13 @@ package te.tetris.core.io
 import spock.lang.Specification
 import spock.lang.Subject
 
-class InputOutputFileHandlerTest extends Specification {
+class InputOutputFileMapperTest extends Specification {
 
     File inputFile = File.createTempFile("tetris-engine-file-handler-input-", ".txt")
     File outputFile = File.createTempFile("tetris-engine-file-handler-output-", ".txt")
 
     @Subject
-    InputOutputFileHandler fileHandler = [inputFile, outputFile]
+    InputOutputFileMapper fileMapper = [inputFile, outputFile]
 
     def setup() {
         inputFile.withWriter { writer ->
@@ -31,7 +31,7 @@ class InputOutputFileHandlerTest extends Specification {
 
         when: 'we process the input file'
             List<String> inputFileContents = []
-            fileHandler.processLineFromInput({ String input ->
+            fileMapper.mapAllInputToOutput({ String input ->
                 inputFileContents << input
 
                 return input + "-" + input

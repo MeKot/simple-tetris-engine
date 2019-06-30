@@ -10,8 +10,7 @@ import te.tetris.core.domain.TetrisPiece;
 /**
  * Transforms a lines of input from a file into {@link List}s of {@link TetrisPiece}s. <br/>
  *
- * Note: validation of input from the file falls outside the scope of this application so it is
- * explicitly ignored. Exceptions will surely be thrown if invalid input is provided.
+ * Input validation is outside of the scope of this assignment, which is why none is present.
  */
 public class InputToTetrisPieceTransformer {
 

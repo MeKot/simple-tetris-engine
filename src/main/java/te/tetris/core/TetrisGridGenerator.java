@@ -9,12 +9,6 @@ import te.tetris.core.domain.TetrisPiece;
 /**
  * Stateless simulator of {@link TetrisPiece}s being dropped into a grid from a particular position
  * at the top, returning the resulting grid after all pieces have been dropped in.
- *
- * <p></p>Uses a {@link LinkedList} to store the tetris grid and <code>boolean[]</code>s to
- * represent the lines of the grid.  The {@link LinkedList} was chosen to minimize memory overhead,
- * to simplify growing the grid, and to simplify shrinking the grid (i.e. line clears).  The last
- * case in particular will surpass arrays/lists in runtime as the grid grows sufficiently large
- * since no shifting of the grid is required when removing line clears.
  */
 public class TetrisGridGenerator {
     private int gridWidth;
@@ -34,7 +28,6 @@ public class TetrisGridGenerator {
 
         for (TetrisPiece piece : pieces) {
             int[][] pieceCoordinates = coordinatesGenerator.generate(piece);
-
             ListIterator<boolean[]> gridIterator = grid.listIterator();
 
             moveToPositionToInsertPiece(gridIterator, pieceCoordinates);
@@ -82,25 +75,21 @@ public class TetrisGridGenerator {
     /**
      * Inserts a piece backwards, starting from where the <code>gridIterator</code> is at and moving
      * backwards. If the grid does not contain the necessary space to insert the piece empty lines
-     * are added to the top of it.
+     * are added until it does.
      */
     private void insertPiece(ListIterator<boolean[]> gridIterator, int[][] pieceCoordinates) {
         int coordinateIndex = pieceCoordinates.length - 1;
 
         while (coordinateIndex >= 0) {
             if (gridIterator.hasPrevious()) {
-                insertPieceBackwards(gridIterator, pieceCoordinates[coordinateIndex--]);
+                boolean[] row = gridIterator.previous();
+
+                for (int column : pieceCoordinates[coordinateIndex--]) {
+                    row[column] = true;
+                }
             } else {
                 gridIterator.add(new boolean[gridWidth]);
             }
-        }
-    }
-
-    private void insertPieceBackwards(ListIterator<boolean[]> gridIterator, int[] coordinatesToSet) {
-        boolean[] line = gridIterator.previous();
-
-        for (int coordinate : coordinatesToSet) {
-            line[coordinate] = true;
         }
     }
 
