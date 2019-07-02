@@ -7,7 +7,7 @@ plugins {
 }
 
 // Tell Gradle what to add to the manifest file for the resulting JAR
-val jar by tasks.getting(Jar::class) {
+tasks.getting(Jar::class) {
     manifest {
         attributes["Main-Class"] = "te.tetris.TetrisApplication"
     }
